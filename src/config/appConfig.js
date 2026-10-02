@@ -13,8 +13,8 @@ const appConfig = {
   /** Автор */
   author: 'Рожнев Родион Сергеевич',
 
-  /** URL файла установщика (относительно public/) */
-  downloadUrl: '/downloads/PhysicsLab3D-Setup.exe',
+  /** URL файла установщика (GitHub Release) */
+  downloadUrl: 'https://github.com/svrozhnev-lgtm/PhysicsLab3D-Website/releases/download/v1.0.0/PhysicsLab3D-Setup.exe',
 
   /** Имя файла установщика */
   downloadFileName: 'PhysicsLab3D-Setup.exe',

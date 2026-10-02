@@ -4,15 +4,19 @@ import appConfig from '../../config/appConfig'
 import './Download.css'
 
 /**
- * Проверяет доступность файла по URL (HEAD-запрос).
+ * Проверяет доступность файла через GitHub Releases API.
  * Возвращает { available, size } или { available: false }.
  */
-async function checkFileAvailability(url) {
+async function checkFileAvailability() {
   try {
-    const res = await fetch(url, { method: 'HEAD' })
-    if (res.ok) {
-      const bytes = Number(res.headers.get('content-length') || 0)
-      return { available: true, size: bytes }
+    const res = await fetch(
+      'https://api.github.com/repos/svrozhnev-lgtm/PhysicsLab3D-Website/releases/tags/v1.0.0'
+    )
+    if (!res.ok) return { available: false, size: 0 }
+    const release = await res.json()
+    const asset = release.assets?.find(a => a.name === appConfig.downloadFileName)
+    if (asset) {
+      return { available: true, size: asset.size }
     }
     return { available: false, size: 0 }
   } catch {
@@ -37,7 +41,7 @@ function Download() {
   })
 
   useEffect(() => {
-    checkFileAvailability(appConfig.downloadUrl).then(setFileStatus)
+    checkFileAvailability().then(setFileStatus)
   }, [])
 
   const isReady = fileStatus.available === true
@@ -85,7 +89,7 @@ function Download() {
                 <a
                   href={appConfig.downloadUrl}
                   className="btn-download-primary"
-                  download={appConfig.downloadFileName}
+                  rel="noopener noreferrer"
                 >
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
